@@ -79,7 +79,12 @@ title 기준 부분일치 검색(대소문자 무시)
 - DB 없음, 메모리(Map) 저장
 - 앱 재시작 시 데이터 초기화
 
-## 참고: 의도적 취약점(하)
+## 참고: 의도적 취약점(학습/스캐너 검증용)
 
 - `application.properties`에 `server.error.include-message=always`가 설정되어 있어, 에러 발생 시 내부 메시지가 클라이언트에 노출될 수 있습니다.
-- 학습용 설정이며 운영 환경에서는 권장되지 않습니다.
+- `CourseController#searchCourses`에서 사용자 쿼리(`q`)를 정화 없이 로그에 기록합니다 (Log Injection).
+- `AdminController`에 스캐너 검증용 의도적 취약점이 포함되어 있습니다:
+  - `GET /admin/users?name=...` — SQL Injection (`Statement` + 문자열 결합)
+  - `GET /admin/ping?host=...` — OS Command Injection (`Runtime.exec` + 사용자 입력)
+  - `GET /admin/token?userId=...` — Weak Hash (MD5) + 하드코드된 비밀번호
+- 학습용이며 운영 환경에는 절대 사용 금지.
